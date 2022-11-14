@@ -76,20 +76,26 @@ const cepInputMasked = IMask(cepInput, cepInputPattern)
 
 
 const btnSearch = get("#btnSearch")
-const btnSearchLoader = get("#btnSearch .loader")
 
 btnSearch.addEventListener('click', () => {
     // console.log(cepInputMasked.unmaskedValue)
+    resultP.style.display = "none"
+    dataResultDiv.style.display = "none"
 
     if(cepInputMasked.unmaskedValue.length!==8){
         alert("Insira um CEP válido.");
     }else {
-        const keyToSearch = cepInputMasked.unmaskedValue
-
-        const find = tree.search(Number(keyToSearch))
-
+        loaderInsideForm.style.display = "block";
+        btnSearch.classList.add("deactivate");
         setTimeout(() => {
+            const keyToSearch = cepInputMasked.unmaskedValue
+
+            const find = tree.search(Number(keyToSearch))
+
+            resultP.style.display = "block"
+
             if (find) {
+                resultP.innerText = `CEP ${cepInputMasked.value} encontrado`;        
                 var node = tree.getNode(Number(keyToSearch))
                 node.key.print()
                 dataResultDiv.style.display = "block"
@@ -107,10 +113,11 @@ btnSearch.addEventListener('click', () => {
                 const complementoValue = get("#complemento .data-value");
                 complementoValue.innerText = (node.key.complement.length==0)? "Não informado" :node.key.complement;
             } else {
-                resultP.style.display = "block"    
                 resultP.innerText = `CEP ${cepInputMasked.value} não encontrado`;
             }
-        }, 200)
+            btnSearch.classList.remove("deactivate");
+            loaderInsideForm.style.display = "none";
+        }, 1500)
         
     }
 })
@@ -147,6 +154,6 @@ datasetButton.addEventListener("click", (event) => {
         const datasetSection = get("#dataset");
         datasetSection.style.display = "none";
         mainAppSection.style.display = "block";
-    }, 500);
+    }, 1500);
     
 })
